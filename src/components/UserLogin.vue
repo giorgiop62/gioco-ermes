@@ -2,44 +2,8 @@
   <div class="container mt-5" style="max-width: 420px;">
     <div class="card shadow-sm">
       <div class="card-body">
-        <h2 class="card-title mb-4 text-center text-primary">Registrazione</h2>
-        <form @submit.prevent="register" novalidate>
-          <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input
-              v-model="form.username"
-              type="text"
-              id="username"
-              class="form-control"
-              placeholder="Inserisci username"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="firstName" class="form-label">Nome</label>
-            <input
-              v-model="form.first_name"
-              type="text"
-              id="firstName"
-              class="form-control"
-              placeholder="Inserisci nome"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="lastName" class="form-label">Cognome</label>
-            <input
-              v-model="form.last_name"
-              type="text"
-              id="lastName"
-              class="form-control"
-              placeholder="Inserisci cognome"
-              required
-            />
-          </div>
-
+        <h2 class="card-title mb-4 text-center text-primary">Login</h2>
+        <form @submit.prevent="login" novalidate>
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input
@@ -47,7 +11,7 @@
               type="email"
               id="email"
               class="form-control"
-              placeholder="Inserisci email"
+              placeholder="Inserisci la tua email"
               required
             />
           </div>
@@ -59,19 +23,19 @@
               type="password"
               id="password"
               class="form-control"
-              placeholder="Inserisci password"
+              placeholder="Inserisci la tua password"
               required
             />
           </div>
 
           <button type="submit" class="btn btn-primary w-100">
-            Registrati
+            Accedi
           </button>
         </form>
 
         <div class="text-center mt-3">
-          <router-link to="/login" class="text-decoration-none">
-            Hai già un account? <strong>Login</strong>
+          <router-link to="/register" class="text-decoration-none">
+            Non hai un account? <strong>Registrati</strong>
           </router-link>
         </div>
 
@@ -92,9 +56,6 @@ export default {
   data() {
     return {
       form: {
-        username: '',
-        first_name: '',
-        last_name: '',
         email: '',
         password: '',
       },
@@ -103,11 +64,11 @@ export default {
     };
   },
   methods: {
-    async register() {
+    async login() {
       this.error = '';
       this.success = '';
       try {
-        const response = await fetch('http://localhost:8000/register', {
+        const response = await fetch('http://localhost:8000/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(this.form),
@@ -117,13 +78,12 @@ export default {
 
         if (response.ok) {
           localStorage.setItem('user', JSON.stringify(data.user));
-          this.success = 'Registrazione avvenuta con successo! Reindirizzamento in corso...';
-          // Reindirizza dopo breve attesa per mostrare messaggio successo
+          this.success = 'Accesso riuscito! Reindirizzamento in corso...';
           setTimeout(() => {
             this.$router.push('/');
           }, 1500);
         } else {
-          this.error = data.error || 'Registrazione fallita';
+          this.error = data.error || 'Credenziali non valide';
         }
       } catch (err) {
         this.error = 'Errore di connessione al server';

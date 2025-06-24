@@ -18,9 +18,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'  // <- IMPORTARE computed!
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 
-const emit = defineEmits(['score', 'gameOver'])
+const router = useRouter()
 
 const questions = [
   {
@@ -64,8 +65,7 @@ function selectOption(key) {
   if (anyWrongSelected) {
     showFeedback.value = true
     setTimeout(() => {
-      emit('score', score.value)
-      emit('gameOver')
+      endGame()
     }, 800)
   } else if (allCorrectSelected) {
     score.value++
@@ -76,11 +76,16 @@ function selectOption(key) {
       if (currentIndex.value < questions.length - 1) {
         currentIndex.value++
       } else {
-        emit('score', score.value)
-        emit('gameOver')
+        endGame()
       }
     }, 800)
   }
+}
+
+function endGame() {
+  localStorage.setItem('score', score.value)
+  localStorage.setItem('total', questions.length)
+  router.push('/result')
 }
 </script>
 
